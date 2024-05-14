@@ -1,3 +1,4 @@
+#!/bin/bash
 # To use the Microsoft Learn Sandbox in the training module
 # https://learn.microsoft.com/training/modules/automatic-update-of-a-webapp-using-azure-functions-and-signalr
 # To run: sign in to Azure CLI with `az login`
@@ -5,14 +6,12 @@
 # bash create-start-resources.sh "SUBSCRIPTION_NAME_OR_ID"
 #
 
-
 set -e
 
 printf "Param 1: $1\n"
 
 # Check if user is logged into Azure CLI
-if ! az account show &> /dev/null
-then
+if ! az account show &>/dev/null; then
   printf "You are not logged into Azure CLI. Please log in with 'az login' and try again."
   exit 1
 fi
@@ -30,16 +29,16 @@ printf "User name: $USER_NAME\n"
 SUBSCRIPTION_NAME=$1
 printf "Using subscription: ""$SUBSCRIPTION_NAME""\n"
 
-# Set the resource group name if not provided as a parameter
-RANDOM_STRING=$(openssl rand -hex 5)
-#printf "Using random string: $RANDOM_STRING\n"
-RESOURCE_GROUP_NAME="$USER_NAME-signalr-$RANDOM_STRING"
+# # Set the resource group name if not provided as a parameter
+# RANDOM_STRING=$(openssl rand -hex 5)
+# #printf "Using random string: $RANDOM_STRING\n"
+RESOURCE_GROUP_NAME="rg-itchallenge-playground"
 
-# Create a resource group
-az group create \
-  --subscription "$SUBSCRIPTION_NAME" \
-  --name "$RESOURCE_GROUP_NAME" \
-  --location eastus
+# # Create a resource group
+# az group create \
+#   --subscription "$SUBSCRIPTION_NAME" \
+#   --name "$RESOURCE_GROUP_NAME" \
+#   --location eastus
 
 # Set default resource group
 az configure --defaults group="$RESOURCE_GROUP_NAME"
@@ -65,28 +64,27 @@ az storage account create \
 
 printf "Creating CosmosDB Account\n"
 
-az cosmosdb create  \
+az cosmosdb create \
   --subscription "$SUBSCRIPTION_NAME" \
   --name $COMSOSDB_NAME \
-  --resource-group $RESOURCE_GROUP_NAME
+  --resource-group $RESOURCE_GROUP_NAME \
+  --location regionName=francecentral failoverPriority=0 isZoneRedundant=False
 
 printf "Get storage connection string\n"
 
-
-
 STORAGE_CONNECTION_STRING=$(az storage account show-connection-string \
---name $(az storage account list \
-  --resource-group $RESOURCE_GROUP_NAME \
-  --query [0].name -o tsv) \
---resource-group $RESOURCE_GROUP_NAME \
---query "connectionString" -o tsv)
+  --name $(az storage account list \
+    --resource-group "$RESOURCE_GROUP_NAME" \
+    --query [0].name -o tsv) \
+  --resource-group "$RESOURCE_GROUP_NAME" \
+  --query "connectionString" -o tsv)
 
-printf "Get account name \n" 
+printf "Get account name \n"
 
 COSMOSDB_ACCOUNT_NAME=$(az cosmosdb list \
-    --subscription "$SUBSCRIPTION_NAME" \
-    --resource-group $RESOURCE_GROUP_NAME \
-    --query [0].name -o tsv)
+  --subscription "$SUBSCRIPTION_NAME" \
+  --resource-group $RESOURCE_GROUP_NAME \
+  --query [0].name -o tsv)
 
 printf "Get CosmosDB connection string \n"
 
@@ -99,15 +97,14 @@ COSMOSDB_CONNECTION_STRING=$(az cosmosdb keys list --type connection-strings \
 printf "\n\nReplace <STORAGE_CONNECTION_STRING> with:\n$STORAGE_CONNECTION_STRING\n\nReplace <COSMOSDB_CONNECTION_STRING> with:\n$COSMOSDB_CONNECTION_STRING"
 
 # create a .env file with the connection strings and keys
-cat >> $NODE_ENV_FILE <<EOF2
+cat >>$NODE_ENV_FILE <<EOF2
 STORAGE_CONNECTION_STRING=$STORAGE_CONNECTION_STRING
 COSMOSDB_CONNECTION_STRING=$COSMOSDB_CONNECTION_STRING
 EOF2
 
 # put resource group name in .env file
-echo -e "RESOURCE_GROUP_NAME=$RESOURCE_GROUP_NAME" >> $NODE_ENV_FILE
+echo -e "RESOURCE_GROUP_NAME=$RESOURCE_GROUP_NAME" >>$NODE_ENV_FILE
 printf "\n\nRESOURCE_GROUP_NAME=$RESOURCE_GROUP_NAME"
-
 
 # Validate the .env file
 if [ -f "$NODE_ENV_FILE" ]; then
