@@ -48,7 +48,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     environment:
-      name: "Production"
+      name: Production
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
@@ -66,5 +66,5 @@ jobs:
         with:
           app-name: "api-stock-exercise"
           slot-name: "Production"
-          package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+          package: ./${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/${{ env.PACKAGE_PATH }}
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C72C6F8232E24887A9DDB2403CAC4F26 }}
