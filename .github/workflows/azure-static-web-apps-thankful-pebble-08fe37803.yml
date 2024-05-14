@@ -20,6 +20,13 @@ jobs:
         with:
           submodules: true
           lfs: false
+
+      - name: Build Client
+        run: |
+          cd start/client
+          npm install
+          npm run build
+
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
@@ -29,7 +36,7 @@ jobs:
           action: "upload"
           ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
           # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
-          app_location: "/start/client" # App source code path
+          app_location: "/start/client/dist" # App source code path
           ###### End of Repository/Build Configurations ######
           skip_app_build: true
 
@@ -43,7 +50,7 @@ jobs:
         uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_THANKFUL_PEBBLE_08FE37803 }}
-          app_location: "/start/client" # App source code path
+          app_location: "/start/client/dist" # App source code path
           action: "close"
           skip_app_build: true
           ###### End of Repository/Build Configurations ######
