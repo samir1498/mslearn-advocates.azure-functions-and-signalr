@@ -24,7 +24,7 @@ jobs:
       #Debug only - Did GitHub action variable get into workflow correctly?
       - name: Echo
         run: |
-          echo "BACKEND_URL: ${{ vars.BACKEND_URL }}"
+          echo "BACKEND_URL: ${{ secrets.BACKEND_URL }}"
 
       - name: Build Client
         run: |
@@ -42,8 +42,10 @@ jobs:
           ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
           # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
           app_location: "/start/client" # App source code path
+          output_location: "dist" # Built app content directory - optional
+          env:
+            BACKEND_URL: ${{ secrets.BACKEND_URL }}
           ###### End of Repository/Build Configurations ######
-          skip_app_build: true
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
