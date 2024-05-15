@@ -9,8 +9,7 @@ const goingOutToSignalR = output.generic({
   type: "signalR",
   name: "signalR",
   hubName: "default",
-  connectionStringSetting:
-    "Endpoint=https://msl-sigr-signalrcbd0aa6b3b.service.signalr.net;AccessKey=8wGRMTTMgZyc8Fzxn47VxbluYk7c0NriIA2+T9fN+54=;Version=1.0;",
+  connectionStringSetting: "SIGNALR_CONNECTION_STRING",
 });
 
 export async function dataToMessage(
