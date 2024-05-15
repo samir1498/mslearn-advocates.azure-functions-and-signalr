@@ -22,6 +22,10 @@ jobs:
         with:
           submodules: true
           lfs: false
+      #Debug only - Did GitHub action variable get into workflow correctly?
+      - name: Echo
+      run: |
+        echo "BACKEND_URL: ${{ vars.BACKEND_URL }}"
 
       - name: Build Client
         run: |
@@ -41,6 +45,8 @@ jobs:
           app_location: "/start/client" # App source code path
           ###### End of Repository/Build Configurations ######
           skip_app_build: true
+          env:
+            BACKEND_URL: ${{ secrets.BACKEND_URL }}
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
