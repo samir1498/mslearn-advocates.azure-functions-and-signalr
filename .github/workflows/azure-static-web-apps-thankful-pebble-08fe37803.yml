@@ -8,24 +8,23 @@ on:
     types: [opened, synchronize, reopened, closed]
     branches:
       - main
-env:
-  BACKEND_URL: ${{ secrets.BACKEND_URL }}
+
 jobs:
   build_and_deploy_job:
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
-    env:
-      BACKEND_URL: ${{ secrets.BACKEND_URL }}
+
     name: Build and Deploy Job
     steps:
       - uses: actions/checkout@v3
         with:
           submodules: true
           lfs: false
+
       #Debug only - Did GitHub action variable get into workflow correctly?
       - name: Echo
-      run: |
-        echo "BACKEND_URL: ${{ vars.BACKEND_URL }}"
+        run: |
+          echo "BACKEND_URL: ${{ vars.BACKEND_URL }}"
 
       - name: Build Client
         run: |
@@ -45,8 +44,6 @@ jobs:
           app_location: "/start/client" # App source code path
           ###### End of Repository/Build Configurations ######
           skip_app_build: true
-          env:
-            BACKEND_URL: ${{ secrets.BACKEND_URL }}
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
