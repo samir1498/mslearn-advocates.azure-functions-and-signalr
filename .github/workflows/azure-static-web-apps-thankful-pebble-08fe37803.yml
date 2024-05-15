@@ -24,7 +24,7 @@ jobs:
       #Debug only - Did GitHub action variable get into workflow correctly?
       - name: Echo
         run: |
-          echo "BACKEND_URL: ${{ secrets.BACKEND_URL }}"
+          echo "BACKEND_URL: ${{ vars.BACKEND_URL }}"
 
       - name: Build And Deploy
         id: builddeploy
@@ -38,7 +38,7 @@ jobs:
           app_location: "/start/client" # App source code path
           output_location: "dist" # Built app content directory - optional
         env:
-          BACKEND_URL: ${{ secrets.BACKEND_URL }}
+          BACKEND_URL: ${{ vars.BACKEND_URL }}
           ###### End of Repository/Build Configurations ######
 
   close_pull_request_job:
