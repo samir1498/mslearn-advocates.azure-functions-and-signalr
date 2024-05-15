@@ -39,8 +39,6 @@ jobs:
           app_location: "/start/client/dist" # App source code path
           ###### End of Repository/Build Configurations ######
           skip_app_build: true
-        env:
-          BACKEND_URL: ${{ secrets.BACKEND_URL }}
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
@@ -55,6 +53,4 @@ jobs:
           app_location: "/start/client/dist" # App source code path
           action: "close"
           skip_app_build: true
-        env:
-          BACKEND_URL: ${{ secrets.BACKEND_URL }}
           ###### End of Repository/Build Configurations ######
